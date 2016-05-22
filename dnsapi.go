@@ -29,7 +29,7 @@ func needFQDN(domain string) string {
 	}
 }
 
-func (b DNSApi) sendMessage(msg *dns.Msg) error {
+func (b DNSApi) SendMessage(msg *dns.Msg) error {
 	c := new(dns.Client)
 	c.Net = "udp"
 	t := new(dns.Transfer)
@@ -45,7 +45,7 @@ func (b DNSApi) sendMessage(msg *dns.Msg) error {
 	return err
 }
 
-func (b DNSApi) add(fqdn string, ip string, class string, ttl int) error {
+func (b DNSApi) Add(fqdn string, ip string, class string, ttl int) error {
 	logrus.Debugf("adding entry %s %s %d", fqdn, ip, ttl)
 
 	m := new(dns.Msg)
@@ -59,10 +59,10 @@ func (b DNSApi) add(fqdn string, ip string, class string, ttl int) error {
 	rrs[0] = rr
 	m.Insert(rrs)
 
-	return b.sendMessage(m)
+	return b.SendMessage(m)
 }
 
-func (b DNSApi) remove(fqdn string, class string) error {
+func (b DNSApi) Remove(fqdn string, class string) error {
 	logrus.Debugf("removing entry %s", fqdn)
 
 	m := new(dns.Msg)
@@ -76,10 +76,10 @@ func (b DNSApi) remove(fqdn string, class string) error {
 	rrs := make([]dns.RR, 1)
 	rrs[0] = rr
 	m.RemoveRRset(rrs)
-	return b.sendMessage(m)
+	return b.SendMessage(m)
 }
 
-func (b DNSApi) list() ([]dns.RR, error) {
+func (b DNSApi) List() ([]dns.RR, error) {
 	logrus.Debugf("listing entries for %s", b.rootdomain)
 
 	t := new(dns.Transfer)
